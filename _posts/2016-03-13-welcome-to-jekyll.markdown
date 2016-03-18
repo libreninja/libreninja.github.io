@@ -6,7 +6,7 @@ date:   2016-03-13 20:18:03 -0700
 categories: Javascript ES6/ES7
 comments: true
 ---
-I have been brushing up my ES6 of late; and I wanted to migrate some current projects over to the new work flow.  Node.js has native support for a [growing list](https://nodejs.org/en/docs/es6/) of new language features, though others are still in progress.  Some transpiler magic is required to make everything work like it should.
+I have been brushing up my ES6 of late; and I wanted to migrate some current projects over to the new work flow.  Node.js has native support for a [growing list](https://nodejs.org/en/docs/es6/) of new language features, though others are still in progress.  Some transpiler magic is required to make everything work like it should in this brave new world.
 
 Syntactic sugar features like arrow functions and string literals work right out of the box in node 5.3.x.  The new module syntax on the other hand, does not.  This post demonstrates how I was able to implement and consume ES6 code modules using 'import' and 'export'.
 
