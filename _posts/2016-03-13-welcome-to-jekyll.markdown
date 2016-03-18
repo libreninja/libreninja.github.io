@@ -33,8 +33,8 @@ What are we going to do with our new syntax powers anyway?  Well, ES6 brings wit
 {% highlight javascript %}
 /* file: set-operations.js */
 export const union = (a, b) => new Set([...a, ...b])
-export const intersection = (a, b) => [...a].reduce((x) => b.has(x))
-export const difference = (a, b) => [...a].reduce((x) => !b.has(x))
+export const intersection = (a, b) => [...a].filter((x) => b.has(x))
+export const difference = (a, b) => [...a].filter((x) => !b.has(x))
 
 /*
  * setString is not standard. But ES6 makes string manipulation
@@ -47,18 +47,24 @@ export const setString = (s) => `set{ ${[...s].join(', ')} }`
 /* file: index.js */
 import { union, intersection, difference, setToString } from 'set-operations'
 
+// we'll need 2 Sets
+let s1 = new Set([1, 2, 3, 4, 5])
+let s2 = new Set([2, 4, 6, 8, 10])
+
+// and a tagged template literal for logging
 const log = (strs) => {
     console.log([...strs].join(' '))
 }
 
-let s1 = new Set([1, 2, 3, 4, 5])
-let s2 = new Set([2, 4, 6, 8, 10])
+// put it all together now
+log(['s1:', setString(s1)])
+log(['s2:', setString(s2)])
 log(['union(s1, s2) //=>', setString(union(s1, s2))])
 log(['intersection(s1, s2) //=>', setString(intersection(s1, s2))])
 log(['difference(s1, s2) //=>', setString(difference(s1, s2))])
 {% endhighlight %}
 
-Next we'll fire up a terminal and try running what we have so far.
+Next we'll fire up a terminal and try running what happens with what we have done so far.
 
 {% highlight bash %}
 $ node index
@@ -77,7 +83,7 @@ SyntaxError: Unexpected token import
     at node.js:1001:3
 {% endhighlight %}
 
-"SyntaxError: Unexpected token import"!?!  That isn't right.  It turns out that we need to transpile our source ahead of time.  There are a few ways to do get this done.  One way is to run our code with 'babel-node', an es6 friendly wrapper for node.  See it in action below.
+"SyntaxError: Unexpected token import"!?!  That can't be right.  It turns out that we need to transpile our source ahead of time.  There are a few ways to get this done.  One way is to run our code with 'babel-node', an es6 friendly wrapper for node.  See it in action below.
 
 {% highlight bash %}
 $ babel-node index
@@ -88,7 +94,7 @@ intersection of s1 and s2: set{ 2, 4 }
 difference of s1 and s2: set{ 1, 3, 5 }
 {% endhighlight %}
 
-That works but there is another just-in-time transpiling mode.  We can require 'babel-register' before including any source written in ES6.  After node imports 'babel-register', we can use modules that use import and export.  Here is a new bootstrap file to set things up.
+That works fine, but there is another just-in-time transpiling mode.  Simply require the 'babel-register' package before including any ES6 syntax.  After that, we can use our ecma-futuristic modules with import and export syntax.  Here is a new bootstrap file to set it all up.
 
 {% highlight javascript %}
 /* file: bootstrap.js */
@@ -107,11 +113,20 @@ intersection of s1 and s2: set{ 2, 4 }
 difference of s1 and s2: set{ 1, 3, 5 }
 {% endhighlight %}
 
-Finally, we can have babel write transpiled files out to disk and run them in ordinary vanilla javascript node environments.  Create a 'dist' folder and tell babel to write the output files there.
+Finally, we can have babel write transpiled files out to disk and run them in ordinary vanilla javascript node environments.  This is useful when you want to package the code for deployment environments where you might not want to transpile on the fly.  We can create a 'dist' folder in our project.  And then tell babel to write the output files there.
 
 {% highlight bash %}
 $ mkdir dist
 $ babel *.js -d dist/.
+bootstrap.js -> dist/bootstrap.js
+index.js -> dist/index.js
+set-operations.js -> dist/set-operations.js
+$ node dist/index
+s1: set{ 1, 2, 3, 4, 5 }
+s2: set{ 2, 4, 6, 8, 10 }
+union(s1, s2) //=> set{ 1, 2, 3, 4, 5, 6, 8, 10 }
+intersection(s1, s2) //=> set{ 2, 4 }
+difference(s1, s2) //=> set{ 1, 3, 5 }
 {% endhighlight %}
 
-Look how far we've come.  From this point, it should be easy enough to automate or customize the process to suit your needs.  So I'll wrap up this post and let you get to it.  Thanks for reading!  Your feedback is appreciated.  Please share your thoughts and ideas about this post in the comments below.
+Just look at how far we've come.  We are living in the future, today.  At this point, it should be easy enough to automate or customize this process to suit your needs.  So I'll wrap up this post and let you get to it.  Your feedback is appreciated.  Please share your thoughts and ideas in the comments below.  Thanks for reading!
